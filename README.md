@@ -1,14 +1,14 @@
 
-# agent_health_check
+# puppet_health_check
 
 
 #### Table of Contents
 
 1. [Description](#description)
-2. [Setup - The basics of getting started with agent_health_check](#setup)
-    * [What agent_health_check affects](#what-agent_health_check-affects)
+2. [Setup - The basics of getting started with puppet_health_check](#setup)
+    * [What puppet_health_check affects](#what-puppet_health_check-affects)
     * [Setup requirements](#setup-requirements)
-    * [Beginning with agent_health_check](#beginning-with-agent_health_check)
+    * [Beginning with puppet_health_check](#beginning-with-puppet_health_check)
 3. [Usage - Configuration options and additional functionality](#usage)
 4. [Limitations - OS compatibility, etc.](#limitations)
 5. [Development - Guide for contributing to the module](#development)
@@ -29,9 +29,7 @@ A set of tasks to carry out health checks on puppet infrastructure.  Includes th
 
 Providing you can run tasks, you should be ok
 
-If your most recent release breaks compatibility or requires particular steps for upgrading, you might want to include an additional "Upgrading" section here.
-
-### Beginning with agent_health_check
+### Beginning with puppet_health_check
 
 `puppet task show puppet_health_check::agent_health` should get you going, everything is driven through tasks which can be accessed from the command line or the PE console.  When you run the task, you'll see output like:
 
