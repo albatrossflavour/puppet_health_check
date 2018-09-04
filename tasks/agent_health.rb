@@ -17,7 +17,7 @@ json = {}
 params = JSON.parse(STDIN.read)
 config = JSON.parse(output)
 
-noop_run = if params['noop'] == true
+noop_run = if params['_noop']
              true
            else
              false
