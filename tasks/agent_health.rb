@@ -36,6 +36,7 @@ lock_file    = config['agent_disabled_lockfile']
 interval     = config['runinterval']
 statedir     = config['statedir']
 puppetmaster = config['server']
+cacert       = config['cacert']
 
 if noop == true
   json['noop'] = 'noop set to true'
@@ -43,6 +44,10 @@ end
 
 if File.file?(lock_file)
   json['lock_file'] = 'agent disabled lockfile found'
+end
+
+if !File.file?(cacert)
+  json['cacert'] = 'CA certificate not found'
 end
 
 if interval.to_i != puppet_interval
