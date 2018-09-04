@@ -36,7 +36,7 @@ lock_file    = config['agent_disabled_lockfile']
 interval     = config['runinterval']
 statedir     = config['statedir']
 puppetmaster = config['server']
-caserver     = config['caserver']
+ca_server    = config['ca_server']
 requestdir   = config['requestdir']
 
 if noop == true
@@ -47,7 +47,7 @@ if File.file?(lock_file)
   json['lock_file'] = 'agent disabled lockfile found'
 end
 
-if !File.file?(requestdir + '/' + certname + '.pem') and (certname != caserver)
+if !File.file?(requestdir + '/' + certname + '.pem') and (certname != ca_server)
   json['signed_cert'] = 'Signed cert not found'
 end
 
