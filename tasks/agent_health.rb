@@ -115,7 +115,7 @@ exit_code = if json.empty?
 
 json['exit']     = exit_code
 json['certname'] = certname
-json['date']      = Time.now.iso8601
+json['date']     = Time.now.iso8601
 json['noop_run'] = noop_run
 puts JSON.dump(json)
 exit exit_code
