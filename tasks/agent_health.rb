@@ -17,10 +17,10 @@ json = {}
 params = JSON.parse(STDIN.read)
 config = JSON.parse(output)
 
-noop_run = if params['noop'] == false
-             false
-           else
+noop_run = if params['noop'] == true
              true
+           else
+             false
            end
 
 puppet_interval = if params['interval'].is_a? Integer
