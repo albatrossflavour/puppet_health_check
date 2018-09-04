@@ -33,7 +33,41 @@ If your most recent release breaks compatibility or requires particular steps fo
 
 ### Beginning with agent_health_check
 
-`puppet task show puppet_health_check::agent_health` should get you going
+`puppet task show puppet_health_check::agent_health` should get you going, everything is driven through tasks which can be accessed from the command line or the PE console.  When you run the task, you'll see output like:
+
+```bash
+# puppet task run puppet_health_check::agent_health -q 'inventory[certname] {}'
+Starting job ...
+Note: The task will run only on permitted nodes.
+New job ID: 487
+Nodes: 4
+
+Started on puppetmaster.example.com ...
+Started on linode-centos-73.example.com ...
+Started on win-3ebipmjenlq.example.coexample.com ...
+Started on cd4pe.example.com ...
+Finished on node cd4pe.example.com
+  date : 2018-09-04T14:24:55+10:00
+  state : clean
+  certname : cd4pe.example.com
+Finished on node puppetmaster.example.com
+  date : 2018-09-04T14:24:55+10:00
+  state : clean
+  certname : puppetmaster.example.com
+Finished on node linode-centos-73.example.com
+  date : 2018-09-04T14:24:56+10:00
+  state : clean
+  certname : linode-centos-73.example.com
+Failed on win-3ebipmjenlq.example.com
+  Error: Task finished with exit-code 1
+  date : 2018-09-04T14:26:28+10:00
+  state : issues found
+  service : Puppet service not configured to run
+  certname : win-3ebipmjenlq.example.com
+
+Job completed. 4/4 nodes succeeded.
+Duration: 5 sec
+```
 
 ## Usage
 
