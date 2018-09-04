@@ -1,0 +1,19 @@
+{
+  "puppet_task_version": 1,
+  "supports_noop": true,
+  "description": "Check the health of a puppet agent",
+  "parameters": {
+    "interval": {
+      "description": "What should the agent run interval be set to? (Defaults to 1800 seconds)",
+      "type": "Optional[Integer]"
+    },
+    "timeout": {
+      "description": "How many seconds should we wait until timing out the patch run? (Defaults to 3600 seconds)",
+      "type": "Optional[Integer]"
+    },
+    "security_only": {
+      "description": "Limit patches to those tagged as security related? (Defaults to false)",
+      "type": "Optional[Boolean]"
+    }
+  }
+}
