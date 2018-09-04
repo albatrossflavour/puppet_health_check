@@ -4,7 +4,7 @@
   "author": "Tony Green",
   "summary": "Carries out basic health checks on the puppet infrastructure using tasks.  Some automated remediation activities are also possible",
   "license": "Apache-2.0",
-  "source": "",
+  "source": "https://github.com/albatrossflavour/puppet_health_check",
   "dependencies": [
 
   ],

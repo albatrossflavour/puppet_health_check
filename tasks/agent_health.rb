@@ -47,7 +47,7 @@ if File.file?(lock_file)
   json['lock_file'] = 'agent disabled lockfile found'
 end
 
-if !File.file?(requestdir + '/' + certname + '.pem') and (certname != ca_server)
+if !File.file?(requestdir + '/' + certname + '.pem') && (certname != ca_server)
   json['signed_cert'] = 'Signed cert not found'
 end
 
@@ -121,7 +121,7 @@ else
   state = 'issues found'
 end
 
-json['state']     = state
+json['state']    = state
 json['certname'] = certname
 json['date']     = Time.now.iso8601
 json['noop_run'] = noop_run
