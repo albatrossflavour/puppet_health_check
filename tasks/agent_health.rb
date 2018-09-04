@@ -113,13 +113,15 @@ rescue
   json['port'] = 'Port ' + pm_port.to_s + ' on ' + puppetmaster + ' not reachable'
 end
 
-exit_code = if json.empty?
-              0
-            else
-              1
-            end
+if json.empty?
+  exit_code = 0
+  state = 'clean'
+else
+  exit_code = 1
+  state = 'issues found'
+end
 
-json['exit']     = exit_code
+json['state']     = state
 json['certname'] = certname
 json['date']     = Time.now.iso8601
 json['noop_run'] = noop_run
