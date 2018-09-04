@@ -107,10 +107,10 @@ rescue
   json['port'] = 'Port ' + pm_port.to_s + ' on ' + puppetmaster + ' not reachable'
 end
 
-exit_code = if json.!empty?
-              1
-            else
+exit_code = if json.empty?
               0
+            else
+              1
             end
 
 json['exit']     = exit_code
