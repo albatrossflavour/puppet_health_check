@@ -4,7 +4,7 @@
   "description": "Set the noop value of a node",
   "parameters": {
     "target_state": {
-      "description": "What should the agent noop value be set to? (Defaults to true)",
+      "description": "What should the agent noop value be set to? (Defaults to false)",
       "type": "Optional[Boolean]"
     }
   }

@@ -16,8 +16,8 @@ json = {}
 params = JSON.parse(STDIN.read)
 config = JSON.parse(output)
 
-target_state = if params['_target_state']
-                 true
+target_state = if params['target_state']
+                 params['target_state']
                else
                  false
                end
