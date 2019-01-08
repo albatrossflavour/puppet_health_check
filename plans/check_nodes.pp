@@ -8,7 +8,7 @@ plan puppet_health_check::check_nodes(
       if $result.ok {
         notice("${node} returned a value: ${result.value}")
       } else {
-        notice("${node} errored with a message: ${result.error.message}")
+        notice("${node} errored with a message: ${result.value}")
       }
     }
   }
