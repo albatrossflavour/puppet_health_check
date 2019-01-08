@@ -26,11 +26,11 @@ current_state = config['noop']
 
 if target_state != current_state
   _output, stderr, _status = Open3.capture3('puppet config set noop ' + target_state.to_s)
-  if stderr =~ /.*/
+  if stderr.empty?
+    result = 'noop value was ' + current_state + ' it is now ' + target_state.to_s
+  else
     result = stderr
     json['noop_fix'] = 'error encountered'
-  else
-    result = 'noop value was ' + current_state + ' it is now ' + target_state.to_s
   end
 else
   result = 'No action required'
