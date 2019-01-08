@@ -27,10 +27,10 @@ current_state = config['runinterval']
 if target_state != current_state
   _output, stderr, _status = Open3.capture3('puppet config set runinterval ' + target_state.to_s)
   if stderr.empty?
-    result = 'noop value was ' + current_state.to_s + ' it is now ' + target_state.to_s
+    result = 'runinterval value was ' + current_state.to_s + ' it is now ' + target_state.to_s
   else
     result = stderr
-    json['noop_fix'] = 'error encountered'
+    json['runinterval_fix'] = 'error encountered'
   end
 else
   result = 'No action required'
