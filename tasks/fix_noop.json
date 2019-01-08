@@ -5,7 +5,7 @@
   "parameters": {
     "target_state": {
       "description": "What should the agent noop value be set to? (Defaults to true)",
-      "type": "Boolean"
+      "type": "Optional[Boolean]"
     }
   }
 }
