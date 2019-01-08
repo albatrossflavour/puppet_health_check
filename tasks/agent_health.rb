@@ -5,7 +5,7 @@ require 'time'
 require 'json'
 require 'socket'
 
-confprint = 'puppet  config print --render-as json'
+confprint = 'puppet config print --render-as json'
 output, stderr, status = Open3.capture3(confprint)
 if status != 0
   puts stderr
