@@ -38,12 +38,49 @@ plan puppet_health_check::check_nodes(
       }
 
       # Fix the lockfile issues
-      if $response['issues']['lockfile'] {
-        $noop = run_task('puppet_health_check::fix_lockfile', $node, '_catch_errors' => true)
-        if $noop.ok {
+      if $response['issues']['lock_file'] {
+        $lockfile = run_task('puppet_health_check::fix_lockfile', $node, '_catch_errors' => true)
+        if $lockfile.ok {
           notice "${node},3,lockfile fixed"
         } else {
           notice "${node},4,could not fix lockfile"
+        }
+      }
+
+      # Fix the runinterval issues
+      if $response['issues']['runinterval'] {
+        $runinterval = run_task('puppet_health_check::fix_runinterval', $node, '_catch_errors' => true)
+        if $runinterval.ok {
+          notice "${node},3,runinterval fixed"
+        } else {
+          notice "${node},4,could not fix runinterval"
+        }
+      }
+
+      # Fix last_run issue
+      if $response['issues']['last_run'] {
+        $last_run = run_command('puppet agent -t', $node, '_catch_errors' => true)
+        if $last_run.ok {
+          notice "${node},3,puppet agent run"
+        } else {
+          notice "${node},4,puppet agent failed"
+        }
+      }
+
+      # Fix service not running issue
+      if $response['issues']['service'] {
+        $service = run_task('service', $node, name => 'puppet', action => enable, '_catch_errors' => true)
+        if $service.ok {
+          notice "${node},3,puppet service enabled"
+        } else {
+          notice "${node},4,puppet not able to be enabled"
+        }
+
+        $restart = run_task('service', $node, name => 'puppet', action => restart, '_catch_errors' => true)
+        if $restart.ok {
+          notice "${node},3,puppet service restarted"
+        } else {
+          notice "${node},4,puppet not able to be restarted"
         }
       }
 
