@@ -3,6 +3,7 @@ plan puppet_health_check::check_nodes(
 ) {
 
   get_targets($nodes).each |$node| {
+    $recheck = false
     $r = run_task('puppet_health_check::agent_health', $node, '_catch_errors' => true)
     $r.each |$result| {
      $response = $result.value
@@ -13,11 +14,17 @@ plan puppet_health_check::check_nodes(
         } else {
           notice("${node} errored with a message: ${noop}")
         }
+        $recheck = true
       }
-      if $result.ok {
-        info("${node} returned a value: ${result.value}")
-      } else {
-        info("${node} errored with a message: ${result.value}")
+      if $recheck {
+        $r = run_task('puppet_health_check::agent_health', $node, '_catch_errors' => true)
+        $r.each |$result| {
+          if $result.ok {
+            info("${node} returned a value: ${result.value}")
+          } else {
+            notice("${node} errored with a message: ${result.value}")
+          }
+        }
       }
     }
   }
