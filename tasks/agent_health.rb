@@ -42,10 +42,10 @@ target_puppet_enabled = if params['target_puppet_enabled'].is_a? Boolean
                           true
                         end
 
-target_puppet_running = if params['target_puppet_running'].is_a? Boolean
+target_puppet_running = if params['target_puppet_running'].is_a? String
                           params['target_puppet_running']
                         else
-                          true
+                          'running'
                         end
 
 certname     = config['certname']

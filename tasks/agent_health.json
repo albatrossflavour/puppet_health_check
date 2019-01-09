@@ -17,7 +17,7 @@
     },
     "target_service_running": {
       "description": "Should the puppet service be running? (Defaults to 'running')",
-      "type": "Optional[Varient[Boolean,Enum['running', 'stopped']]]"
+      "type": "Optional[Variant[Boolean,Enum['running', 'stopped']]]"
     }
   }
 }
