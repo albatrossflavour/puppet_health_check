@@ -1,6 +1,9 @@
 plan puppet_health_check::check_nodes(
-  TargetSpec  $nodes,
+  TargetSpec $nodes,
+  Boolean    $noop,
 ) {
+
+  $results = {}
 
   get_targets($nodes).each |$node| {
     $recheck = false
@@ -16,22 +19,29 @@ plan puppet_health_check::check_nodes(
         }
         $recheck = true
       }
+
+      # Do we need to recheck the health after any task fixes?
       if $recheck {
-        $r = run_task('puppet_health_check::agent_health', $node, '_catch_errors' => true)
-        $r.each |$result| {
-          if $result.ok {
-            info("${node} returned a value: ${result.value}")
-          } else {
-            notice("${node} errored with a message: ${result.value}")
-          }
-        }
-      } else {
-        if $result.ok {
+        # Yes, we do need to
+        $second_check = run_task('puppet_health_check::agent_health', $node, '_catch_errors' => true)
+        if $second_check.ok {
           info("${node} returned a value: ${result.value}")
+          results[$node] = "${node} returned a value: ${result.value}"
         } else {
           notice("${node} errored with a message: ${result.value}")
+          results[$node] = "${node} errored with a message: ${result.value}"
+        }
+      } else {
+        # No we don't, so just return the inital results
+        if $result.ok {
+          info("${node} returned a value: ${result.value}")
+          results[$node] = "${node} returned a value: ${result.value}"
+        } else {
+          notice("${node} errored with a message: ${result.value}")
+          results[$node] = "${node} errored with a message: ${result.value}"
         }
       }
     }
+    return $results
   }
 }
