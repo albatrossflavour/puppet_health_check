@@ -24,11 +24,11 @@ plan puppet_health_check::check_nodes(
         # Yes, we do need to
         $second_check = run_task('puppet_health_check::agent_health', $node, '_catch_errors' => true)
         $second_check.each | $result | {
-         return $result.value
+         $plan_output[$node] => $result.value
         }
       } else {
         # No we don't, so just return the inital results
-        return $result.value
+        $plan_output[$node] => $result.value
       }
     }
     return $plan_output
