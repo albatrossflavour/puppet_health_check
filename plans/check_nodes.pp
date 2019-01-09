@@ -10,7 +10,7 @@ plan puppet_health_check::check_nodes(
       if $response['noop'] {
         $noop = run_task('puppet_health_check::fix_noop', $node, '_catch_errors' => true)
         if $noop.ok {
-          notice("${node} returned a value: ${noop}")
+          info("${node} returned a value: ${noop}")
         } else {
           notice("${node} errored with a message: ${noop}")
         }
@@ -24,6 +24,12 @@ plan puppet_health_check::check_nodes(
           } else {
             notice("${node} errored with a message: ${result.value}")
           }
+        }
+      } else {
+        if $result.ok {
+          info("${node} returned a value: ${result.value}")
+        } else {
+          notice("${node} errored with a message: ${result.value}")
         }
       }
     }
