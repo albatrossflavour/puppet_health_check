@@ -12,7 +12,7 @@ plan puppet_health_check::check_nodes(
           Error['puppet_health_check/debug'] : {
             notice("${noop.message}")
           }
-          Error : { fail_plan($noop) } }
+          Error : { fail_plan($noop) }
         }
       }
       if $result.ok {
