@@ -13,6 +13,7 @@ if status != 0
 end
 
 json = {}
+json['issues'] = {}
 
 params = JSON.parse(STDIN.read)
 config = JSON.parse(output)
@@ -125,6 +126,5 @@ json['state']    = state
 json['certname'] = certname
 json['date']     = Time.now.iso8601
 json['noop_run'] = noop_run
-json['issues']  = $issues
 puts JSON.dump(json)
 exit exit_code
