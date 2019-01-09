@@ -24,19 +24,11 @@ plan puppet_health_check::check_nodes(
         # Yes, we do need to
         $second_check = run_task('puppet_health_check::agent_health', $node, '_catch_errors' => true)
         $second_check.each | $result | {
-         if $result.ok {
-           return "${node} returned a value: ${result.value}"
-         } else {
-           return "${node} errored with a message: ${result.value}"
-         }
+         return $result.value
         }
       } else {
         # No we don't, so just return the inital results
-        if $result.ok {
-          return "${node} returned a value: ${result.value}"
-        } else {
-          return "${node} errored with a message: ${result.value}"
-        }
+        return $result.value
       }
     }
     return $plan_output
