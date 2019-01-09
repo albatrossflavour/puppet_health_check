@@ -2,35 +2,37 @@ plan puppet_health_check::check_nodes(
   TargetSpec $nodes,
 ) {
 
-  $plan_output = {}
+  without_default_logging() || {
+    $first_check = run_task('puppet_health_check::agent_health', $nodes, '_catch_errors' => true)
+    $first_check.each | $result | {
+      $node = $result.target.name
+      unless $result.ok {
+        notice "${node} health check failed"
+        next()
+      }
 
-  get_targets($nodes).each |$node| {
-    $recheck = false
-    $r = run_task('puppet_health_check::agent_health', $node, '_catch_errors' => true)
-    $r.each |$result| {
-     $response = $result.value
+      if $result.value['state'] == 'clean' {
+        notice "${node} heath check passed"
+        next()
+      } else {
+        notice "${node} some checks failed, trying to remediate"
+      }
+
+      $response = $result.value
+
       if $response['noop'] {
         $noop = run_task('puppet_health_check::fix_noop', $node, '_catch_errors' => true)
         if $noop.ok {
-          info("${node} returned a value: ${noop}")
+          notice "${node} noop fixed"
         } else {
-          notice("${node} errored with a message: ${noop}")
+          notice "${node} could not fix noop"
         }
-        $recheck = true
       }
 
-      # Do we need to recheck the health after any task fixes?
-      if $recheck {
-        # Yes, we do need to
-        $second_check = run_task('puppet_health_check::agent_health', $node, '_catch_errors' => true)
-        $second_check.each | $result | {
-         $plan_output[$node] => $result.value
-        }
-      } else {
-        # No we don't, so just return the inital results
-        $plan_output[$node] => $result.value
+      $second_check = run_task('puppet_health_check::agent_health', $node, '_catch_errors' => true)
+      $second_check.each | $result | {
+        notice "${node} ${result.value}"
       }
     }
-    return $plan_output
   }
 }
