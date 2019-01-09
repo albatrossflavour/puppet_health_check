@@ -3,7 +3,7 @@ plan puppet_health_check::check_nodes(
   Boolean    $noop,
 ) {
 
-  $results = {}
+  $plan_output = {}
 
   get_targets($nodes).each |$node| {
     $recheck = false
@@ -26,22 +26,22 @@ plan puppet_health_check::check_nodes(
         $second_check = run_task('puppet_health_check::agent_health', $node, '_catch_errors' => true)
         if $second_check.ok {
           info("${node} returned a value: ${result.value}")
-          results[$node] = "${node} returned a value: ${result.value}"
+          plan_output[$node] = "${node} returned a value: ${result.value}"
         } else {
           notice("${node} errored with a message: ${result.value}")
-          results[$node] = "${node} errored with a message: ${result.value}"
+          plan_output[$node] = "${node} errored with a message: ${result.value}"
         }
       } else {
         # No we don't, so just return the inital results
         if $result.ok {
           info("${node} returned a value: ${result.value}")
-          results[$node] = "${node} returned a value: ${result.value}"
+          plan_output[$node] = "${node} returned a value: ${result.value}"
         } else {
           notice("${node} errored with a message: ${result.value}")
-          results[$node] = "${node} errored with a message: ${result.value}"
+          plan_output[$node] = "${node} errored with a message: ${result.value}"
         }
       }
     }
-    return $results
+    return $plan_output
   }
 }
