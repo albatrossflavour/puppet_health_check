@@ -14,14 +14,6 @@ plan puppet_health_check::check_nodes(
           }
           Error : { fail_plan($noop) } }
         }
-                    }
-        $noop.each | $noop_result | {
-          if $noop_result.ok {
-            notice("Fixed noop on ${node}")
-          } else {
-            notice("${node} errored with a message: ${noop_result.value}")
-          }
-        }
       }
       if $result.ok {
         notice("${node} returned a value: ${result.value}")
