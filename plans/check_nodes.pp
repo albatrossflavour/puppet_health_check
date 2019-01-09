@@ -8,18 +8,17 @@ plan puppet_health_check::check_nodes(
      $response = $result.value
       if $response['noop'] {
         $noop = run_task('puppet_health_check::fix_noop', $node, '_catch_errors' => true)
-        case $noop {
-          Error['puppet_health_check/debug'] : {
-            notice("${noop.message}")
-          }
-          Error : { fail_plan($noop) }
+        if $noop.ok {
+          notice("${node} returned a value: ${noop.value}")
+        } else {
+          notice("${node} errored with a message: ${noop.value}")
         }
       }
-      if $result.ok {
-        notice("${node} returned a value: ${result.value}")
-      } else {
-        notice("${node} errored with a message: ${result.value}")
-      }
+      #if $result.ok {
+      #  notice("${node} returned a value: ${result.value}")
+      #} else {
+      #  notice("${node} errored with a message: ${result.value}")
+      #}
     }
   }
 }
