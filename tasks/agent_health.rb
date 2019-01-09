@@ -13,7 +13,6 @@ if status != 0
 end
 
 json = {}
-issues = {}
 
 params = JSON.parse(STDIN.read)
 config = JSON.parse(output)
@@ -41,19 +40,19 @@ ca_server    = config['ca_server']
 requestdir   = config['requestdir']
 
 if noop == true
-  $issues['noop'] = 'noop set to true'
+  json['issues']['noop'] = 'noop set to true'
 end
 
 if File.file?(lock_file)
-  $issues['lock_file'] = 'agent disabled lockfile found'
+  json['issues']['lock_file'] = 'agent disabled lockfile found'
 end
 
 if !File.file?(requestdir + '/' + certname + '.pem') && (certname != ca_server)
-  $issues['signed_cert'] = 'Signed cert not found'
+  json['issues']['signed_cert'] = 'Signed cert not found'
 end
 
 if interval.to_i != puppet_interval
-  $issues['runinterval'] = 'not set to ' + puppet_interval.to_s
+  json['issues']['runinterval'] = 'not set to ' + puppet_interval.to_s
 end
 
 run_time = 0
@@ -67,7 +66,7 @@ if File.file?(last_run)
   end
   now = Time.new.to_i
   if (now - interval.to_i) > run_time.to_i
-    $issues['last_run'] = 'Last run too long ago'
+    json['issues']['last_run'] = 'Last run too long ago'
   end
   failcount = 0
   last_run_contents = File.open(last_run, 'r').read
@@ -77,10 +76,10 @@ if File.file?(last_run)
     failcount += 1
   end
   if failcount > 0
-    $issues['failures'] = 'Last run had failures'
+    json['issues']['failures'] = 'Last run had failures'
   end
 else
-  $issues['last_run'] = 'Cannot locate file : ' + last_run
+  json['issues']['last_run'] = 'Cannot locate file : ' + last_run
 end
 
 report = statedir + '/last_run_report.yaml'
@@ -93,7 +92,7 @@ if File.file?(report)
     failcount += 1
   end
   if failcount > 0
-    $issues['catalog'] = 'Catalog failed to compile'
+    json['issues']['catalog'] = 'Catalog failed to compile'
   end
 end
 
@@ -105,16 +104,16 @@ output.split("\n").each do |line|
   statuscount += 1
 end
 if statuscount != 2
-  $issues['service'] = 'Puppet service not configured to run'
+  json['issues']['service'] = 'Puppet service not configured to run'
 end
 
 begin
   TCPSocket.new(puppetmaster, pm_port)
 rescue
-  $issues['port'] = 'Port ' + pm_port.to_s + ' on ' + puppetmaster + ' not reachable'
+  json['issues']['port'] = 'Port ' + pm_port.to_s + ' on ' + puppetmaster + ' not reachable'
 end
 
-if issues.empty?
+if json['issues'].empty?
   exit_code = 0
   state = 'clean'
 else
