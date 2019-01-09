@@ -1,6 +1,5 @@
 plan puppet_health_check::check_nodes(
   TargetSpec $nodes,
-  Boolean    $noop,
 ) {
 
   $plan_output = {}
@@ -24,17 +23,19 @@ plan puppet_health_check::check_nodes(
       if $recheck {
         # Yes, we do need to
         $second_check = run_task('puppet_health_check::agent_health', $node, '_catch_errors' => true)
-        if $second_check.ok {
-          $plan_output[$node] = "${node} returned a value: ${result.value}"
-        } else {
-          $plan_output[$node] = "${node} errored with a message: ${result.value}"
+        $second_check.each | $result | {
+         if $result.ok {
+           return "${node} returned a value: ${result.value}"
+         } else {
+           return "${node} errored with a message: ${result.value}"
+         }
         }
       } else {
         # No we don't, so just return the inital results
         if $result.ok {
-          $plan_output[$node] = "${node} returned a value: ${result.value}"
+          return "${node} returned a value: ${result.value}"
         } else {
-          $plan_output[$node] = "${node} errored with a message: ${result.value}"
+          return "${node} errored with a message: ${result.value}"
         }
       }
     }
