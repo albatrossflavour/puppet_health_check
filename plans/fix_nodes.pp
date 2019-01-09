@@ -1,5 +1,7 @@
-plan puppet_health_check::check_nodes(
+plan puppet_health_check::fix_nodes(
   TargetSpec $nodes,
+  Boolean    $target_noop_state = false,
+  Integer    $target_runinterval = 1800,
 ) {
 
   # Return codes

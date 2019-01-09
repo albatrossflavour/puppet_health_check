@@ -24,11 +24,29 @@ noop_run = if params['_noop']
              false
            end
 
-puppet_interval = if params['interval'].is_a? Integer
-                    params['interval'].to_i
-                  else
-                    1800
-                  end
+target_runinterval = if params['target_runinterval'].is_a? Integer
+                       params['interval'].to_i
+                     else
+                       1800
+                     end
+
+target_noop_state = if params['target_noop_state'].is_a? Boolean
+                      params['target_noop_state']
+                    else
+                      false
+                    end
+
+target_puppet_enabled = if params['target_puppet_enabled'].is_a? Boolean
+                          params['target_puppet_enabled']
+                        else
+                          true
+                        end
+
+target_puppet_running = if params['target_puppet_running'].is_a? Boolean
+                          params['target_puppet_running']
+                        else
+                          true
+                        end
 
 certname     = config['certname']
 pm_port      = config['masterport'].to_i
@@ -40,8 +58,8 @@ puppetmaster = config['server']
 ca_server    = config['ca_server']
 requestdir   = config['requestdir']
 
-if noop == true
-  json['issues']['noop'] = 'noop set to true'
+if noop != target_noop_state
+  json['issues']['noop'] = 'noop set to ' + noop.to_s + ' should be ' + target_noop_scope
 end
 
 if File.file?(lock_file)
@@ -52,8 +70,8 @@ if !File.file?(requestdir + '/' + certname + '.pem') && (certname != ca_server)
   json['issues']['signed_cert'] = 'Signed cert not found'
 end
 
-if interval.to_i != puppet_interval
-  json['issues']['runinterval'] = 'not set to ' + puppet_interval.to_s
+if interval.to_i != target_runinterval
+  json['issues']['runinterval'] = 'not set to ' + target_runinterval.to_s
 end
 
 run_time = 0
@@ -97,15 +115,24 @@ if File.file?(report)
   end
 end
 
-statuscount = 0
+enabled = false
+running = false
 output, _stderr, _status = Open3.capture3('puppet resource service puppet')
 output.split("\n").each do |line|
-  matchdata = line.match(/\s+(ensure.*running|enable.*true)/)
-  next unless matchdata
-  statuscount += 1
+  if matchdata =~ /^  enable => '#{target_puppet_enabled}',$/
+    enabled = true
+  end
+  if matchdata =~ /^  ensure => '#{target_puppet_running}',$/
+    running = true
+  end
 end
-if statuscount != 2
-  json['issues']['service'] = 'Puppet service not configured to run'
+
+if enabled == false
+  json['issues']['enabled'] = 'Puppet service not configured to run at boot'
+end
+
+if running == false
+  json['issues']['running'] = 'Puppet service not running'
 end
 
 begin
