@@ -1,7 +1,9 @@
 plan puppet_health_check::fix_nodes(
   TargetSpec $nodes,
-  Boolean    $target_noop_state = false,
-  Integer    $target_runinterval = 1800,
+  Boolean    $target_noop_state      = false,
+  Integer    $target_runinterval     = 1800,
+  Boolean    $target_service_enabled = true,
+  Boolean    $target_service_running = true,
 ) {
 
   # Return codes
@@ -12,7 +14,14 @@ plan puppet_health_check::fix_nodes(
   # 100 : Issues remaining at the end of the check
 
   without_default_logging() || {
-    $first_check = run_task('puppet_health_check::agent_health', $nodes, '_catch_errors' => true)
+    $first_check = run_task('puppet_health_check::agent_health',
+                              $nodes,
+                              target_noop_state      => $target_noop_state,
+                              target_service_enabled => $target_service_enabled,
+                              target_service_running => $target_service_running,
+                              target_runinterval     => $target_runinterval,
+                              '_catch_errors'        => true
+                            )
     $first_check.each | $result | {
       $node = $result.target.name
       # Return error for those that couldn't run the health check
@@ -31,7 +40,7 @@ plan puppet_health_check::fix_nodes(
 
       # Fix the noop issues
       if $response['issues']['noop'] {
-        $noop = run_task('puppet_health_check::fix_noop', $node, '_catch_errors' => true)
+        $noop = run_task('puppet_health_check::fix_noop', $node, target_state => $target_noop_state, '_catch_errors' => true)
         if $noop.ok {
           notice "${node},3,noop fixed"
         } else {
@@ -51,7 +60,7 @@ plan puppet_health_check::fix_nodes(
 
       # Fix the runinterval issues
       if $response['issues']['runinterval'] {
-        $runinterval = run_task('puppet_health_check::fix_runinterval', $node, '_catch_errors' => true)
+        $runinterval = run_task('puppet_health_check::fix_runinterval', $node, target_state => $target_runinterval, '_catch_errors' => true)
         if $runinterval.ok {
           notice "${node},3,runinterval fixed"
         } else {
@@ -69,25 +78,47 @@ plan puppet_health_check::fix_nodes(
         }
       }
 
-      # Fix service not running issue
-      if $response['issues']['service'] {
-        $service = run_task('service', $node, name => 'puppet', action => enable, '_catch_errors' => true)
-        if $service.ok {
-          notice "${node},3,puppet service enabled"
-        } else {
-          notice "${node},4,puppet not able to be enabled"
+      # Fix service enabled issue
+      if $response['issues']['enabled'] {
+
+        $enabled_action = $target_service_enabled ? {
+          true  => 'enable',
+          false => 'disable',
         }
 
-        $restart = run_task('service', $node, name => 'puppet', action => restart, '_catch_errors' => true)
-        if $restart.ok {
-          notice "${node},3,puppet service restarted"
+        $enabled = run_task('service', $node, name => 'puppet', action => $enabled_action, '_catch_errors' => true)
+        if $enabled.ok {
+          notice "${node},3,puppet service enabled set to ${target_service_enabled}"
         } else {
-          notice "${node},4,puppet not able to be restarted"
+          notice "${node},4,puppet service enabled not able to be set to ${target_service_enabled}"
+        }
+      }
+
+      # Fix service running issue
+      if $response['issues']['running'] {
+
+        $service_action = $target_service_running ? {
+          true  => 'start',
+          false => 'stop',
+        }
+
+        $running = run_task('service', $node, name => 'puppet', action => $service_action, '_catch_errors' => true)
+        if $running.ok {
+          notice "${node},3,puppet service set to ${target_service_running}"
+        } else {
+          notice "${node},4,puppet service not able to be set to ${target_service_running}"
         }
       }
 
       # Do the second run to validate that things have been fixed
-      $second_check = run_task('puppet_health_check::agent_health', $node, '_catch_errors' => true)
+      $second_check = run_task('puppet_health_check::agent_health',
+                                 $node,
+                                 target_noop_state      => $target_noop_state,
+                                 target_service_enabled => $target_service_enabled,
+                                 target_service_running => $target_service_running,
+                                 target_runinterval     => $target_runinterval,
+                                 '_catch_errors' => true
+                              )
       $second_check.each | $result | {
         $result.value['issues'].each | $issue | {
           # Return any residual issues

@@ -25,7 +25,7 @@ noop_run = if params['_noop']
            end
 
 target_runinterval = if params['target_runinterval']
-                       params['interval'].to_i
+                       params['target_runinterval'].to_i
                      else
                        1800
                      end
