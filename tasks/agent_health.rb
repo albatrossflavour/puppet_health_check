@@ -24,29 +24,33 @@ noop_run = if params['_noop']
              false
            end
 
-target_runinterval = if params['target_runinterval'].is_a? Integer
+target_runinterval = if params['target_runinterval']
                        params['interval'].to_i
                      else
                        1800
                      end
 
-target_noop_state = if params['target_noop_state'].is_a? Boolean
-                      params['target_noop_state']
-                    else
+target_noop_state = if params['target_noop_state'].nil?
                       false
+                    else
+                      params['target_noop_state']
                     end
 
-target_puppet_enabled = if params['target_puppet_enabled'].is_a? Boolean
-                          params['target_puppet_enabled']
-                        else
+target_service_enabled = if params['target_service_enabled'].nil?
                           true
-                        end
+                         else
+                           params['target_service_enabled']
+                         end
 
-target_puppet_running = if params['target_puppet_running'].is_a? String
-                          params['target_puppet_running']
-                        else
-                          'running'
-                        end
+target_service_running = if params['target_service_running'].nil?
+                           'running'
+                         elsif params['target_service_running'] == true
+                           'running'
+                         elsif params['target_service_running'] == false
+                           'stopped'
+                         else
+                           params['target_service_running']
+                         end
 
 certname     = config['certname']
 pm_port      = config['masterport'].to_i
@@ -59,7 +63,7 @@ ca_server    = config['ca_server']
 requestdir   = config['requestdir']
 
 if noop != target_noop_state
-  json['issues']['noop'] = 'noop set to ' + noop.to_s + ' should be ' + target_noop_scope
+  json['issues']['noop'] = 'noop set to ' + noop.to_s + ' should be ' + target_noop_state.to_s
 end
 
 if File.file?(lock_file)
@@ -119,20 +123,20 @@ enabled = false
 running = false
 output, _stderr, _status = Open3.capture3('puppet resource service puppet')
 output.split("\n").each do |line|
-  if matchdata =~ /^  enable => '#{target_puppet_enabled}',$/
+  if line =~ /^  enable => '#{target_service_enabled}',$/
     enabled = true
   end
-  if matchdata =~ /^  ensure => '#{target_puppet_running}',$/
+  if line =~ /^  ensure => '#{target_service_running}',$/
     running = true
   end
 end
 
 if enabled == false
-  json['issues']['enabled'] = 'Puppet service not configured to run at boot'
+  json['issues']['enabled'] = 'Puppet service enabled not set to ' + target_service_enabled.to_s
 end
 
 if running == false
-  json['issues']['running'] = 'Puppet service not running'
+  json['issues']['running'] = 'Puppet service not set to ' + target_service_running.to_s
 end
 
 begin
