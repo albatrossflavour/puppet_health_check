@@ -18,7 +18,7 @@ config = JSON.parse(output)
 lock_file = config['agent_disabled_lockfile']
 
 if File.file?(lock_file)
-  result ='agent disabled lockfile found, removing'
+  result = 'agent disabled lockfile found, removing'
   File.delete(lock_file)
 else
   result = 'No action required'

@@ -37,7 +37,7 @@ target_noop_state = if params['target_noop_state'].nil?
                     end
 
 target_service_enabled = if params['target_service_enabled'].nil?
-                          true
+                           true
                          else
                            params['target_service_enabled']
                          end
@@ -83,7 +83,7 @@ last_run = statedir + '/last_run_summary.yaml'
 if File.file?(last_run)
   last_run_contents = File.open(last_run, 'r').read
   last_run_contents.each_line do |line|
-    matchdata = line.match(/^\s*last_run: ([0-9]*)/)
+    matchdata = line.match(%r{^\s*last_run: ([0-9]*)})
     next unless matchdata
     run_time = matchdata[1]
   end
@@ -94,7 +94,7 @@ if File.file?(last_run)
   failcount = 0
   last_run_contents = File.open(last_run, 'r').read
   last_run_contents.each_line do |line|
-    matchdata = line.match(/.*(fail.*: [1-9]|skipped.*: [1-9])/)
+    matchdata = line.match(%r{.*(fail.*: [1-9]|skipped.*: [1-9])})
     next unless matchdata
     failcount += 1
   end
@@ -110,7 +110,7 @@ failcount = 0
 if File.file?(report)
   report_contents = File.open(report, 'r').read
   report_contents.each_line do |line|
-    matchdata = line.match(/status: failed/)
+    matchdata = line.match(%r{status: failed})
     next unless matchdata
     failcount += 1
   end
@@ -123,10 +123,10 @@ enabled = false
 running = false
 output, _stderr, _status = Open3.capture3('puppet resource service puppet')
 output.split("\n").each do |line|
-  if line =~ /^  enable => '#{target_service_enabled}',$/
+  if line =~ %r{^  enable => '#{target_service_enabled}',$}
     enabled = true
   end
-  if line =~ /^  ensure => '#{target_service_running}',$/
+  if line =~ %r{^  ensure => '#{target_service_running}',$}
     running = true
   end
 end
@@ -145,13 +145,13 @@ rescue
   json['issues']['port'] = 'Port ' + pm_port.to_s + ' on ' + puppetmaster + ' not reachable'
 end
 
-if json['issues'].empty?
-  exit_code = 0
-  state = 'clean'
-else
-  exit_code = 0
-  state = 'issues found'
-end
+state = if json['issues'].empty?
+          'clean'
+        else
+          'issues found'
+        end
+
+exit_code = 0
 
 json['state']    = state
 json['certname'] = certname
