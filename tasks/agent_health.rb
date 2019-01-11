@@ -5,7 +5,7 @@ require 'time'
 require 'json'
 require 'socket'
 
-confprint = 'puppet  config print --render-as json'
+confprint = 'puppet config print --render-as json'
 output, stderr, status = Open3.capture3(confprint)
 if status != 0
   puts stderr
@@ -13,6 +13,7 @@ if status != 0
 end
 
 json = {}
+json['issues'] = {}
 
 params = JSON.parse(STDIN.read)
 config = JSON.parse(output)
@@ -23,11 +24,33 @@ noop_run = if params['_noop']
              false
            end
 
-puppet_interval = if params['interval'].is_a? Integer
-                    params['interval'].to_i
-                  else
-                    1800
-                  end
+target_runinterval = if params['target_runinterval']
+                       params['target_runinterval'].to_i
+                     else
+                       1800
+                     end
+
+target_noop_state = if params['target_noop_state'].nil?
+                      false
+                    else
+                      params['target_noop_state']
+                    end
+
+target_service_enabled = if params['target_service_enabled'].nil?
+                           true
+                         else
+                           params['target_service_enabled']
+                         end
+
+target_service_running = if params['target_service_running'].nil?
+                           'running'
+                         elsif params['target_service_running'] == true
+                           'running'
+                         elsif params['target_service_running'] == false
+                           'stopped'
+                         else
+                           params['target_service_running']
+                         end
 
 certname     = config['certname']
 pm_port      = config['masterport'].to_i
@@ -39,20 +62,20 @@ puppetmaster = config['server']
 ca_server    = config['ca_server']
 requestdir   = config['requestdir']
 
-if noop == true
-  json['noop'] = 'noop set to true'
+if noop != target_noop_state
+  json['issues']['noop'] = 'noop set to ' + noop.to_s + ' should be ' + target_noop_state.to_s
 end
 
 if File.file?(lock_file)
-  json['lock_file'] = 'agent disabled lockfile found'
+  json['issues']['lock_file'] = 'agent disabled lockfile found'
 end
 
 if !File.file?(requestdir + '/' + certname + '.pem') && (certname != ca_server)
-  json['signed_cert'] = 'Signed cert not found'
+  json['issues']['signed_cert'] = 'Signed cert not found'
 end
 
-if interval.to_i != puppet_interval
-  json['runinterval'] = 'not set to ' + puppet_interval.to_s
+if interval.to_i != target_runinterval
+  json['issues']['runinterval'] = 'not set to ' + target_runinterval.to_s
 end
 
 run_time = 0
@@ -60,26 +83,26 @@ last_run = statedir + '/last_run_summary.yaml'
 if File.file?(last_run)
   last_run_contents = File.open(last_run, 'r').read
   last_run_contents.each_line do |line|
-    matchdata = line.match(/^\s*last_run: ([0-9]*)/)
+    matchdata = line.match(%r{^\s*last_run: ([0-9]*)})
     next unless matchdata
     run_time = matchdata[1]
   end
   now = Time.new.to_i
   if (now - interval.to_i) > run_time.to_i
-    json['last_run'] = 'Last run too long ago'
+    json['issues']['last_run'] = 'Last run too long ago'
   end
   failcount = 0
   last_run_contents = File.open(last_run, 'r').read
   last_run_contents.each_line do |line|
-    matchdata = line.match(/.*(fail.*: [1-9]|skipped.*: [1-9])/)
+    matchdata = line.match(%r{.*(fail.*: [1-9]|skipped.*: [1-9])})
     next unless matchdata
     failcount += 1
   end
   if failcount > 0
-    json['failures'] = 'Last run had failures'
+    json['issues']['failures'] = 'Last run had failures'
   end
 else
-  json['last_run'] = 'Cannot locate file : ' + last_run
+  json['issues']['last_run'] = 'Cannot locate file : ' + last_run
 end
 
 report = statedir + '/last_run_report.yaml'
@@ -87,39 +110,48 @@ failcount = 0
 if File.file?(report)
   report_contents = File.open(report, 'r').read
   report_contents.each_line do |line|
-    matchdata = line.match(/status: failed/)
+    matchdata = line.match(%r{status: failed})
     next unless matchdata
     failcount += 1
   end
   if failcount > 0
-    json['catalog'] = 'Catalog failed to compile'
+    json['issues']['catalog'] = 'Catalog failed to compile'
   end
 end
 
-statuscount = 0
+enabled = false
+running = false
 output, _stderr, _status = Open3.capture3('puppet resource service puppet')
 output.split("\n").each do |line|
-  matchdata = line.match(/\s+(ensure.*running|enable.*true)/)
-  next unless matchdata
-  statuscount += 1
+  if line =~ %r{^  enable => '#{target_service_enabled}',$}
+    enabled = true
+  end
+  if line =~ %r{^  ensure => '#{target_service_running}',$}
+    running = true
+  end
 end
-if statuscount != 2
-  json['service'] = 'Puppet service not configured to run'
+
+if enabled == false
+  json['issues']['enabled'] = 'Puppet service enabled not set to ' + target_service_enabled.to_s
+end
+
+if running == false
+  json['issues']['running'] = 'Puppet service not set to ' + target_service_running.to_s
 end
 
 begin
   TCPSocket.new(puppetmaster, pm_port)
 rescue
-  json['port'] = 'Port ' + pm_port.to_s + ' on ' + puppetmaster + ' not reachable'
+  json['issues']['port'] = 'Port ' + pm_port.to_s + ' on ' + puppetmaster + ' not reachable'
 end
 
-if json.empty?
-  exit_code = 0
-  state = 'clean'
-else
-  exit_code = 1
-  state = 'issues found'
-end
+state = if json['issues'].empty?
+          'clean'
+        else
+          'issues found'
+        end
+
+exit_code = 0
 
 json['state']    = state
 json['certname'] = certname
