@@ -115,13 +115,13 @@ plan puppet_health_check::fix_nodes(
 
       # Do the second run to validate that things have been fixed
       $second_check = run_task('puppet_health_check::agent_health',
-                                 $node,
-                                 target_noop_state      => $target_noop_state,
-                                 target_service_enabled => $target_service_enabled,
-                                 target_service_running => $target_service_running,
-                                 target_runinterval     => $target_runinterval,
-                                 '_catch_errors' => true
-                               )
+                                  $node,
+                                  target_noop_state      => $target_noop_state,
+                                  target_service_enabled => $target_service_enabled,
+                                  target_service_running => $target_service_running,
+                                  target_runinterval     => $target_runinterval,
+                                  '_catch_errors' => true
+                                )
       $second_check.each | $result | {
         $result.value['issues'].each | $issue | {
           # Return any residual issues

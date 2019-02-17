@@ -30,6 +30,7 @@ matrix:
 branches:
   only:
     - master
+    - development
     - /^v\d/
 notifications:
   email: false
