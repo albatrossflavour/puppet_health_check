@@ -121,7 +121,7 @@ plan puppet_health_check::fix_nodes(
                                  target_service_running => $target_service_running,
                                  target_runinterval     => $target_runinterval,
                                  '_catch_errors' => true
-                              )
+                               )
       $second_check.each | $result | {
         $result.value['issues'].each | $issue | {
           # Return any residual issues
