@@ -23,6 +23,8 @@ plan puppet_health_check::fix_nodes(
                               target_runinterval     => $target_runinterval,
                               '_catch_errors'        => true
                             )
+    # Loop around the results from the fleet wide check to
+    # see where we stand and what needs to be fixed.
     $first_check.each | $result | {
       $node = $result.target.name
       # Return error for those that couldn't run the health check
@@ -119,7 +121,7 @@ plan puppet_health_check::fix_nodes(
                                  target_service_running => $target_service_running,
                                  target_runinterval     => $target_runinterval,
                                  '_catch_errors' => true
-                              )
+                               )
       $second_check.each | $result | {
         $result.value['issues'].each | $issue | {
           # Return any residual issues
