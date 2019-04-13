@@ -10,10 +10,11 @@ cache:
 before_script:
   - bundle -v
   - rm Gemfile.lock || true
-  - gem update --user-install --system $RUBYGEMS_VERSION
+    #- gem update --user-install --system $RUBYGEMS_VERSION
+  - gem update --user-install $RUBYGEMS_VERSION
   - gem --version
   - bundle -v
-  - bundle install --user-install --without system_tests --path vendor/bundle --jobs $(nproc)
+  - bundle install --without system_tests --path vendor/bundle --jobs $(nproc)
 
 syntax lint metadata_lint check:symlinks check:git_ignore check:dot_underscore check:test_file rubocop-Ruby 2.5.3-Puppet ~> 6:
   stage: syntax
