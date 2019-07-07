@@ -1,11 +1,20 @@
 all:
 	${MAKE} test
 
-install_centos:
-	bundle exec rake 'litmus:provision_list[non_travis_el]'
+install_centos6:
+	bundle exec rake 'litmus:provision_list[travis_el6]'
+
+install_centos7:
+	bundle exec rake 'litmus:provision_list[travis_el7]'
+
+install_debian:
+	bundle exec rake 'litmus:provision_list[travis_deb]'
 
 install_ubuntu:
-	bundle exec rake 'litmus:provision_list[travis_deb]'
+	bundle exec rake 'litmus:provision_list[travis_ubuntu]'
+
+install_vagrant:
+	bundle exec rake 'litmus:provision_list[vagrant]'
 
 install_module:
 	bundle exec rake litmus:install_module
@@ -31,24 +40,53 @@ acceptance:
 	${MAKE} test_puppet6
 
 test_puppet6:
-	${MAKE} install_centos
+	${MAKE} install_centos6
+	bundle exec rake litmus:install_agent[puppet6]
+	${MAKE} install_module
+	bundle exec rake litmus:acceptance:parallel
+	${MAKE} teardown
+	${MAKE} install_centos7
 	bundle exec rake litmus:install_agent[puppet6]
 	${MAKE} install_module
 	bundle exec rake litmus:acceptance:parallel
 	${MAKE} teardown
 	${MAKE} install_ubuntu
+	bundle exec rake litmus:install_agent[puppet6]
+	${MAKE} install_module
+	bundle exec rake litmus:acceptance:parallel
+	${MAKE} install_debian
+	bundle exec rake litmus:install_agent[puppet6]
+	${MAKE} install_module
+	bundle exec rake litmus:acceptance:parallel
+	${MAKE} teardown
+	${MAKE} install_vagrant
 	bundle exec rake litmus:install_agent[puppet6]
 	${MAKE} install_module
 	bundle exec rake litmus:acceptance:parallel
 	${MAKE} teardown
 
 test_puppet5:
-	${MAKE} install_centos
+	${MAKE} install_centos6
+	bundle exec rake litmus:install_agent[puppet5]
+	${MAKE} install_module
+	bundle exec rake litmus:acceptance:parallel
+	${MAKE} teardown
+	${MAKE} install_centos7
 	bundle exec rake litmus:install_agent[puppet5]
 	${MAKE} install_module
 	bundle exec rake litmus:acceptance:parallel
 	${MAKE} teardown
 	${MAKE} install_ubuntu
+	bundle exec rake litmus:install_agent[puppet5]
+	${MAKE} install_module
+	bundle exec rake litmus:acceptance:parallel
+	${MAKE} teardown
+	${MAKE} install_debian
+	bundle exec rake litmus:install_agent[puppet5]
+	${MAKE} install_module
+	bundle exec rake litmus:acceptance:parallel
+	${MAKE} teardown
+	${MAKE} install_vagrant
 	bundle exec rake litmus:install_agent[puppet5]
 	${MAKE} install_module
 	bundle exec rake litmus:acceptance:parallel
