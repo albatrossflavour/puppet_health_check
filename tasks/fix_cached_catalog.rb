@@ -22,15 +22,15 @@ target_state = if params['target_state']
                  false
                end
 
-current_state = config['used_cached_catalog']
+current_state = config['use_cached_catalog']
 
 if target_state != current_state
-  _output, stderr, _status = Open3.capture3('puppet config set used_cached_catalog ' + target_state.to_s)
+  _output, stderr, _status = Open3.capture3('puppet config set use_cached_catalog ' + target_state.to_s)
   if stderr.empty?
-    result = 'used_cached_catalog value was ' + current_state.to_s + ' it is now ' + target_state.to_s
+    result = 'use_cached_catalog value was ' + current_state.to_s + ' it is now ' + target_state.to_s
   else
     result = stderr
-    json['used_cached_catalog'] = 'error encountered'
+    json['use_cached_catalog'] = 'error encountered'
   end
 else
   result = 'No action required'
