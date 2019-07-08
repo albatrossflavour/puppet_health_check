@@ -83,7 +83,7 @@ if File.file?(lock_file)
 end
 
 if File.file?(requestdir + '/' + certname + '.pem') && (certname != ca_server)
-  json['issues']['signed_cert'] = 'Signed cert not found'
+  json['issues']['signed_cert'] = 'Unsigned certificate found'
 end
 
 if !File.file?(certdir + '/' + certname + '.pem') && (certname != ca_server)
