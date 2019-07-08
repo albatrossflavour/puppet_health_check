@@ -58,15 +58,16 @@ target_service_running = if params['target_service_running'].nil?
                            params['target_service_running']
                          end
 
-certname     = config['certname']
-pm_port      = config['masterport'].to_i
-noop         = config['noop']
-lock_file    = config['agent_disabled_lockfile']
-interval     = config['runinterval']
-statedir     = config['statedir']
-puppetmaster = config['server']
-ca_server    = config['ca_server']
-requestdir   = config['requestdir']
+certname           = config['certname']
+pm_port            = config['masterport'].to_i
+noop               = config['noop']
+use_cached_catalog = config['use_cached_catalog']
+lock_file          = config['agent_disabled_lockfile']
+interval           = config['runinterval']
+statedir           = config['statedir']
+puppetmaster       = config['server']
+ca_server          = config['ca_server']
+requestdir         = config['requestdir']
 
 if noop != target_noop_state
   json['issues']['noop'] = 'noop set to ' + noop.to_s + ' should be ' + target_noop_state.to_s
