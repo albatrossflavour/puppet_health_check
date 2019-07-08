@@ -68,6 +68,7 @@ statedir           = config['statedir']
 puppetmaster       = config['server']
 ca_server          = config['ca_server']
 requestdir         = config['requestdir']
+certdir            = config['certdir']
 
 if noop != target_noop_state
   json['issues']['noop'] = 'noop set to ' + noop.to_s + ' should be ' + target_noop_state.to_s
@@ -82,6 +83,10 @@ if File.file?(lock_file)
 end
 
 if File.file?(requestdir + '/' + certname + '.pem') && (certname != ca_server)
+  json['issues']['signed_cert'] = 'Signed cert not found'
+end
+
+if !File.file?(certdir + '/' + certname + '.pem') && (certname != ca_server)
   json['issues']['signed_cert'] = 'Signed cert not found'
 end
 
