@@ -6,7 +6,7 @@ if os[:family] == 'redhat'
   run_shell('echo "export LC_ALL=C" >> ~/.bashrc')
 end
 
-if os[:family] == 'debian'
+if os[:family] == 'debian' || os[:family] == 'ubuntu'
   run_shell('echo "export LANG=C" >> /etc/default/locale')
   run_shell('echo "export LC_ALL=C" >> /etc/default/locale')
 end
