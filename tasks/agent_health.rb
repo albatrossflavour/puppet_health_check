@@ -36,6 +36,12 @@ target_noop_state = if params['target_noop_state'].nil?
                       params['target_noop_state']
                     end
 
+target_use_cached_catalog_state = if params['target_use_cached_catalog_state'].nil?
+                                    false
+                                  else
+                                    params['target_use_cached_catalog_state']
+                                  end
+
 target_service_enabled = if params['target_service_enabled'].nil?
                            true
                          else
@@ -64,6 +70,10 @@ requestdir   = config['requestdir']
 
 if noop != target_noop_state
   json['issues']['noop'] = 'noop set to ' + noop.to_s + ' should be ' + target_noop_state.to_s
+end
+
+if use_cached_catalog != target_use_cached_catalog_state
+  json['issues']['use_cached_catalog'] = 'use_cached_catalog set to ' + use_cached_catalog.to_s + ' should be ' + target_use_cached_catalog_state.to_s
 end
 
 if File.file?(lock_file)

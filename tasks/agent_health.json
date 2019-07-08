@@ -11,6 +11,10 @@
       "description": "What should the agent noop state be set to? (Defaults to false)",
       "type": "Optional[Boolean]"
     },
+    "target_use_cached_catalog_state": {
+      "description": "What should the agent use_cached_catalog state be set to? (Defaults to false)",
+      "type": "Optional[Boolean]"
+    },
     "target_service_enabled": {
       "description": "Should the puppet service be enabled? (Defaults to true)",
       "type": "Optional[Boolean]"
