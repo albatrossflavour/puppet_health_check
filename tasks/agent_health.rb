@@ -36,6 +36,12 @@ target_noop_state = if params['target_noop_state'].nil?
                       params['target_noop_state']
                     end
 
+target_use_cached_catalog_state = if params['target_use_cached_catalog_state'].nil?
+                                    false
+                                  else
+                                    params['target_use_cached_catalog_state']
+                                  end
+
 target_service_enabled = if params['target_service_enabled'].nil?
                            true
                          else
@@ -52,25 +58,35 @@ target_service_running = if params['target_service_running'].nil?
                            params['target_service_running']
                          end
 
-certname     = config['certname']
-pm_port      = config['masterport'].to_i
-noop         = config['noop']
-lock_file    = config['agent_disabled_lockfile']
-interval     = config['runinterval']
-statedir     = config['statedir']
-puppetmaster = config['server']
-ca_server    = config['ca_server']
-requestdir   = config['requestdir']
+certname           = config['certname']
+pm_port            = config['masterport'].to_i
+noop               = config['noop']
+use_cached_catalog = config['use_cached_catalog']
+lock_file          = config['agent_disabled_lockfile']
+interval           = config['runinterval']
+statedir           = config['statedir']
+puppetmaster       = config['server']
+ca_server          = config['ca_server']
+requestdir         = config['requestdir']
+certdir            = config['certdir']
 
 if noop != target_noop_state
   json['issues']['noop'] = 'noop set to ' + noop.to_s + ' should be ' + target_noop_state.to_s
+end
+
+if use_cached_catalog != target_use_cached_catalog_state
+  json['issues']['use_cached_catalog'] = 'use_cached_catalog set to ' + use_cached_catalog.to_s + ' should be ' + target_use_cached_catalog_state.to_s
 end
 
 if File.file?(lock_file)
   json['issues']['lock_file'] = 'agent disabled lockfile found'
 end
 
-if !File.file?(requestdir + '/' + certname + '.pem') && (certname != ca_server)
+if File.file?(requestdir + '/' + certname + '.pem') && (certname != ca_server)
+  json['issues']['signed_cert'] = 'Unsigned certificate found'
+end
+
+if !File.file?(certdir + '/' + certname + '.pem') && (certname != ca_server)
   json['issues']['signed_cert'] = 'Signed cert not found'
 end
 
