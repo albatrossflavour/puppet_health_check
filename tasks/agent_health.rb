@@ -81,7 +81,7 @@ if File.file?(lock_file)
   json['issues']['lock_file'] = 'agent disabled lockfile found'
 end
 
-if !File.file?(requestdir + '/' + certname + '.pem') && (certname != ca_server)
+if File.file?(requestdir + '/' + certname + '.pem') && (certname != ca_server)
   json['issues']['signed_cert'] = 'Signed cert not found'
 end
 
