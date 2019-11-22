@@ -10,7 +10,7 @@ cache:
 before_script:
   - bundle -v
   - rm Gemfile.lock || true
-  - gem update --system $RUBYGEMS_VERSION
+  - gem update --user-install $RUBYGEMS_VERSION
   - gem --version
   - bundle -v
   - bundle install --without system_tests --path vendor/bundle --jobs $(nproc)

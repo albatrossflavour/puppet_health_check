@@ -13,8 +13,16 @@
 - Release V0.4.0 [\#8](https://github.com/albatrossflavour/puppet_health_check/pull/8) ([albatrossflavour](https://github.com/albatrossflavour))
 - Litmus testing for linux complete [\#6](https://github.com/albatrossflavour/puppet_health_check/pull/6) ([albatrossflavour](https://github.com/albatrossflavour))
 
-## [0.3.0](https://github.com/albatrossflavour/puppet_health_check/tree/0.3.0) (2019-02-17)
 
+## [0.4.0](https://github.com/albatrossflavour/puppet_health_check/tree/0.4.0) (2019-07-08)
+[Full Changelog](https://github.com/albatrossflavour/puppet_health_check/compare/0.3.0...0.4.0)
+
+**Merged pull requests:**
+
+- Feature/cached catalog [\#7](https://github.com/albatrossflavour/puppet_health_check/pull/7) ([albatrossflavour](https://github.com/albatrossflavour))
+- Litmus testing for linux complete [\#6](https://github.com/albatrossflavour/puppet_health_check/pull/6) ([albatrossflavour](https://github.com/albatrossflavour))
+
+## [0.3.0](https://github.com/albatrossflavour/puppet_health_check/tree/0.3.0) (2019-02-17)
 [Full Changelog](https://github.com/albatrossflavour/puppet_health_check/compare/0.2.0...0.3.0)
 
 **Merged pull requests:**
