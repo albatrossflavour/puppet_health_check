@@ -128,7 +128,7 @@ if File.file?(report)
 end
 
 _output, _stderr, status = Open3.capture3('puppet ssl verify')
-if status > 0
+if status != 0
   json['issues']['signed_cert'] = 'SSL verify error'
 end
 
