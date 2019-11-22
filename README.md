@@ -17,7 +17,7 @@
 
 A set of tasks (and plan) to carry out health checks on puppet agents.  Includes things such as :
 
-* Valiating the puppetmaster/compile masters are reachable from the agent
+* Validating the puppetmaster/compile masters are reachable from the agent
 * The puppet agent is enabled and running
 * The run interval is set to the desired value
 * The last run was within the run interval
