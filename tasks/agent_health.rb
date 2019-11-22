@@ -82,14 +82,6 @@ if File.file?(lock_file)
   json['issues']['lock_file'] = 'agent disabled lockfile found'
 end
 
-if File.file?(requestdir + '/' + certname + '.pem') && (certname != ca_server)
-  json['issues']['signed_cert'] = 'Unsigned certificate found'
-end
-
-if !File.file?(certdir + '/' + certname + '.pem') && (certname != ca_server)
-  json['issues']['signed_cert'] = 'Signed cert not found'
-end
-
 if interval.to_i != target_runinterval
   json['issues']['runinterval'] = 'not set to ' + target_runinterval.to_s
 end
@@ -133,6 +125,11 @@ if File.file?(report)
   if failcount > 0
     json['issues']['catalog'] = 'Catalog failed to compile'
   end
+end
+
+_output, _stderr, status = Open3.capture3('puppet ssl verify')
+if status != 0
+  json['issues']['signed_cert'] = 'SSL verify error'
 end
 
 enabled = false
