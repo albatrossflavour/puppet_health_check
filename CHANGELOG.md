@@ -1,16 +1,20 @@
 # Changelog
 
+## [0.5.2](https://github.com/albatrossflavour/puppet_health_check/tree/0.5.2) (2020-07-23)
+
+[Full Changelog](https://github.com/albatrossflavour/puppet_health_check/compare/0.5.1...0.5.2)
+
+**Fixed bugs:**
+
+- Module lacks 2019 support in both metadata and functionality [\#12](https://github.com/albatrossflavour/puppet_health_check/issues/12)
+
 ## [0.5.1](https://github.com/albatrossflavour/puppet_health_check/tree/0.5.1) (2020-07-23)
 
 [Full Changelog](https://github.com/albatrossflavour/puppet_health_check/compare/0.5.0...0.5.1)
 
-Bug fixes:
-
-- 2019 introduced new whitespace into `puppet resource` output.  Adapted the task to fix it.  Thanks to Pete/Alison.
-
 ## [0.5.0](https://github.com/albatrossflavour/puppet_health_check/tree/0.5.0) (2019-11-22)
 
-[Full Changelog](https://github.com/albatrossflavour/puppet_health_check/compare/0.3.0...0.5.0)
+[Full Changelog](https://github.com/albatrossflavour/puppet_health_check/compare/0.4.0...0.5.0)
 
 **Implemented enhancements:**
 
@@ -18,19 +22,19 @@ Bug fixes:
 
 **Merged pull requests:**
 
-- Release V0.4.0 [\#8](https://github.com/albatrossflavour/puppet_health_check/pull/8) ([albatrossflavour](https://github.com/albatrossflavour))
-- Litmus testing for linux complete [\#6](https://github.com/albatrossflavour/puppet_health_check/pull/6) ([albatrossflavour](https://github.com/albatrossflavour))
-
+- V0.5.0 release [\#11](https://github.com/albatrossflavour/puppet_health_check/pull/11) ([albatrossflavour](https://github.com/albatrossflavour))
 
 ## [0.4.0](https://github.com/albatrossflavour/puppet_health_check/tree/0.4.0) (2019-07-08)
+
 [Full Changelog](https://github.com/albatrossflavour/puppet_health_check/compare/0.3.0...0.4.0)
 
 **Merged pull requests:**
 
-- Feature/cached catalog [\#7](https://github.com/albatrossflavour/puppet_health_check/pull/7) ([albatrossflavour](https://github.com/albatrossflavour))
+- Release V0.4.0 [\#8](https://github.com/albatrossflavour/puppet_health_check/pull/8) ([albatrossflavour](https://github.com/albatrossflavour))
 - Litmus testing for linux complete [\#6](https://github.com/albatrossflavour/puppet_health_check/pull/6) ([albatrossflavour](https://github.com/albatrossflavour))
 
 ## [0.3.0](https://github.com/albatrossflavour/puppet_health_check/tree/0.3.0) (2019-02-17)
+
 [Full Changelog](https://github.com/albatrossflavour/puppet_health_check/compare/0.2.0...0.3.0)
 
 **Merged pull requests:**
