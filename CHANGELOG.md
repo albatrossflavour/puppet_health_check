@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.5.1](https://github.com/albatrossflavour/puppet_health_check/tree/0.5.1) (2020-07-23)
+
+[Full Changelog](https://github.com/albatrossflavour/puppet_health_check/compare/0.5.0...0.5.1)
+
+Bug fixes:
+
+- 2019 introduced new whitespace into `puppet resource` output.  Adapted the task to fix it.  Thanks to Pete/Alison.
+
 ## [0.5.0](https://github.com/albatrossflavour/puppet_health_check/tree/0.5.0) (2019-11-22)
 
 [Full Changelog](https://github.com/albatrossflavour/puppet_health_check/compare/0.3.0...0.5.0)
