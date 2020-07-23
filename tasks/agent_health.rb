@@ -136,10 +136,10 @@ enabled = false
 running = false
 output, _stderr, _status = Open3.capture3('puppet resource service puppet')
 output.split("\n").each do |line|
-  if line =~ %r{^  enable => '#{target_service_enabled}',$}
+  if line =~ %r{^\s+enable\s+=> '#{target_service_enabled}',$}
     enabled = true
   end
-  if line =~ %r{^  ensure => '#{target_service_running}',$}
+  if line =~ %r{^\s+ensure\s+=> '#{target_service_running}',$}
     running = true
   end
 end
