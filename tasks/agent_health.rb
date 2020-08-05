@@ -158,7 +158,7 @@ if compile_masters[0]
     begin
       TCPSocket.new(compiler, pm_port)
     rescue
-      json['issues']['port'][compiler] = 'Port ' + pm_port.to_s + ' on ' + compiler + ' not reachable'
+      json['issues']['port ' + compiler] = 'Port ' + pm_port.to_s + ' on ' + compiler + ' not reachable'
     end
   end
 else
