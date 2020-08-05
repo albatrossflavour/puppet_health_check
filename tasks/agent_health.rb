@@ -65,6 +65,7 @@ use_cached_catalog = config['use_cached_catalog']
 lock_file          = config['agent_disabled_lockfile']
 interval           = config['runinterval']
 statedir           = config['statedir']
+compilemasters     = config['server_list'].split(',')
 puppetmaster       = config['server']
 ca_server          = config['ca_server']
 requestdir         = config['requestdir']
@@ -152,10 +153,20 @@ if running == false
   json['issues']['running'] = 'Puppet service not set to ' + target_service_running.to_s
 end
 
-begin
-  TCPSocket.new(puppetmaster, pm_port)
-rescue
-  json['issues']['port'] = 'Port ' + pm_port.to_s + ' on ' + puppetmaster + ' not reachable'
+if compile_masters[0]
+  compile_masters.each do |compiler|
+    begin
+      TCPSocket.new(compiler, pm_port)
+    rescue
+      json['issues']['port'][compiler] = 'Port ' + pm_port.to_s + ' on ' + compiler + ' not reachable'
+    end
+  end
+else
+  begin
+    TCPSocket.new(puppetmaster, pm_port)
+  rescue
+    json['issues']['port'] = 'Port ' + pm_port.to_s + ' on ' + puppetmaster + ' not reachable'
+  end
 end
 
 state = if json['issues'].empty?
