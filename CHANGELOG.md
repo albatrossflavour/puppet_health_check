@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.6.0](https://github.com/albatrossflavour/puppet_health_check/tree/0.6.0) (2020-08-05)
+
+[Full Changelog](https://github.com/albatrossflavour/puppet_health_check/compare/0.5.2...0.6.0)
+
+**Implemented enhancements:**
+
+- Support compiler network port checks
+
 ## [0.5.2](https://github.com/albatrossflavour/puppet_health_check/tree/0.5.2) (2020-07-23)
 
 [Full Changelog](https://github.com/albatrossflavour/puppet_health_check/compare/0.5.1...0.5.2)
