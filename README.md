@@ -1,4 +1,3 @@
-[![Build Status](https://travis-ci.org/albatrossflavour/puppet_health_check.svg?branch=master)](https://travis-ci.org/albatrossflavour/puppet_health_check)
 # puppet_health_check
 
 
