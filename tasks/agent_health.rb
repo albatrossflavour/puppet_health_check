@@ -171,11 +171,17 @@ end
 
 state = if json['issues'].empty?
           'clean'
+          exit_code = 0
         else
           'issues found'
+          exit_code = 1
+          json[:_error] = { msg: e.message,
+                              kind:    "puppetlabs-example_modules/unknown",
+                              details: { class: e.class.to_s },
+                          }
         end
 
-exit_code = 0
+
 
 json['state']    = state
 json['certname'] = certname
