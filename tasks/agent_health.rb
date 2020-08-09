@@ -175,9 +175,8 @@ state = if json['issues'].empty?
         else
           'issues found'
           exit_code = 1
-          json[:_error] = { msg: e.message,
-                              kind:    "puppetlabs-example_modules/unknown",
-                              details: { class: e.class.to_s },
+          json[:_error] = { msg: 'Issues found',
+                              kind:    "puppet_health_check/agent_health"
                           }
         end
 
