@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.7.0](https://github.com/albatrossflavour/puppet_health_check/tree/0.7.0) (2020-08-10)
+
+[Full Changelog](https://github.com/albatrossflavour/puppet_health_check/compare/0.6.0...0.7.0)
+
+**Implemented enhancements:**
+
+- Exit with error on failure
+
 ## [0.6.0](https://github.com/albatrossflavour/puppet_health_check/tree/0.6.0) (2020-08-05)
 
 [Full Changelog](https://github.com/albatrossflavour/puppet_health_check/compare/0.5.2...0.6.0)
