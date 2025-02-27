@@ -91,7 +91,7 @@ if File.file?(last_run)
   last_run_contents.each_line do |line|
     matchdata = line.match(%r{^time: '(.*)'$})
     next unless matchdata
-    run_time = matchdata[1]
+    run_time = Time.parse(matchdata[1]).to_i
   end
   now = Time.new.to_i
   if (now - interval.to_i) > run_time.to_i
