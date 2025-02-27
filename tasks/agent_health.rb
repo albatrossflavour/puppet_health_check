@@ -85,11 +85,11 @@ if interval.to_i != target_runinterval
 end
 
 run_time = 0
-last_run = statedir + '/last_run_summary.yaml'
+last_run = statedir + '/last_run_report.yaml'
 if File.file?(last_run)
   last_run_contents = File.open(last_run, 'r').read
   last_run_contents.each_line do |line|
-    matchdata = line.match(%r{^\s*last_run: ([0-9]*)})
+    matchdata = line.match(%r{^time: '(.*)'$})
     next unless matchdata
     run_time = matchdata[1]
   end
