@@ -26,7 +26,7 @@ A set of tasks (and plan) to carry out health checks on puppet agents.  Includes
 
 ## Setup
 
-Providing you can run tasks, you should be ok.  The tasks and plan have been tested on Linux (centos and debian) and various Windows versions.  It **SHOULD** work on anything with a puppet agent capable of running tasks.
+Providing you can run tasks, you should be ok.  The tasks and plan have been tested on Linux (centos, ubuntu, redhat, and debian) and various Windows versions.  It **SHOULD** work on anything with a puppet agent capable of running tasks.
 
 ### Beginning with puppet_health_check
 
