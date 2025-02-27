@@ -67,9 +67,6 @@ interval           = config['runinterval']
 statedir           = config['statedir']
 compile_masters    = config['server_list'].split(',')
 puppetmaster       = config['server']
-ca_server          = config['ca_server']
-requestdir         = config['requestdir']
-certdir            = config['certdir']
 
 if noop != target_noop_state
   json['issues']['noop'] = 'noop set to ' + noop.to_s + ' should be ' + target_noop_state.to_s
@@ -119,7 +116,7 @@ failcount = 0
 if File.file?(report)
   report_contents = File.open(report, 'r').read
   report_contents.each_line do |line|
-    matchdata = line.match(%r{status: failed})
+    matchdata = line.include?('status: failed')
     next unless matchdata
     failcount += 1
   end
@@ -137,10 +134,10 @@ enabled = false
 running = false
 output, _stderr, _status = Open3.capture3('puppet resource service puppet')
 output.split("\n").each do |line|
-  if line =~ %r{^\s+enable\s+=> '#{target_service_enabled}',$}
+  if %r{^\s+enable\s+=> '#{target_service_enabled}',$}.match?(line)
     enabled = true
   end
-  if line =~ %r{^\s+ensure\s+=> '#{target_service_running}',$}
+  if %r{^\s+ensure\s+=> '#{target_service_running}',$}.match?(line)
     running = true
   end
 end
@@ -155,11 +152,9 @@ end
 
 if compile_masters[0]
   compile_masters.each do |compiler|
-    begin
-      TCPSocket.new(compiler, pm_port)
-    rescue
-      json['issues']['port ' + compiler] = 'Port ' + pm_port.to_s + ' on ' + compiler + ' not reachable'
-    end
+    TCPSocket.new(compiler, pm_port)
+  rescue
+    json['issues']['port ' + compiler] = 'Port ' + pm_port.to_s + ' on ' + compiler + ' not reachable'
   end
 else
   begin
@@ -169,18 +164,12 @@ else
   end
 end
 
-state = if json['issues'].empty?
-          'clean'
-          exit_code = 0
-        else
-          'issues found'
-          exit_code = 1
-          json[:_error] = { msg: 'Issues found',
-                              kind:    "puppet_health_check/agent_health"
-                          }
-        end
-
-
+exit_code, state = if json['issues'].empty?
+                     [0, 'clean']
+                   else
+                     json[:_error] = { msg: 'Issues found', kind: 'puppet_health_check/agent_health' }
+                     [1, 'issues found']
+                   end
 
 json['state']    = state
 json['certname'] = certname
