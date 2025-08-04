@@ -1,5 +1,25 @@
 # Changelog
 
+## [0.9.0](https://github.com/albatrossflavour/puppet_health_check/tree/0.9.0) (2025-01-04)
+
+[Full Changelog](https://github.com/albatrossflavour/puppet_health_check/compare/0.8.0...0.9.0)
+
+**Implemented enhancements:**
+
+- Confirmed compatibility with Puppet 8
+- Updated module metadata to reflect Puppet 8 support
+- Module tested and verified to work with modern Puppet Enterprise versions
+
+## [0.8.0](https://github.com/albatrossflavour/puppet_health_check/tree/0.8.0) (2024)
+
+[Full Changelog](https://github.com/albatrossflavour/puppet_health_check/compare/0.7.0...0.8.0)
+
+**Fixed bugs:**
+
+- Updated REXML dependency
+- Fixed missing timestamp issues
+- Removed deprecated last run summary references
+
 ## [0.7.0](https://github.com/albatrossflavour/puppet_health_check/tree/0.7.0) (2020-08-10)
 
 [Full Changelog](https://github.com/albatrossflavour/puppet_health_check/compare/0.6.0...0.7.0)
